@@ -1,0 +1,33 @@
+name: Flutter create apk
+on: 
+  push: 
+      branches: [ main ] 
+      paths-ignore: 
+        - "docs/**" 
+        - "drz-swagger/**" 
+        - ".vscode/**" 
+  pull_request: 
+      branches: [ main ] 
+      paths-ignore: 
+        - "docs/**" 
+        - "drz-swagger/**" 
+        - ".vscode/**"
+jobs: 
+  build: 
+    runs-on: ubuntu-latest 
+    steps: 
+      - uses: actions/checkout@v1 
+      - uses: actions/setup-java@v1 
+        with: 
+          java-version: "12.x" 
+      - uses: subosito/flutter-action@v1 
+        with: 
+          channel: "stable" 
+      - uses: actions/checkout@v2 
+      - name: Install dependencies 
+        run: flutter packages get 
+      - run: flutter build apk --release 
+      - uses: actions/upload-artifact@v1 
+        with: 
+          name: APK for QA 
+          path: build/app/outputs/apk/dev/debug/apk_name.apk
