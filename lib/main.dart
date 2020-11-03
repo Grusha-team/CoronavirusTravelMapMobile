@@ -1,18 +1,12 @@
+import 'package:corona_travel/data/corona_travel_api.dart';
+import 'package:corona_travel/presentation/screens/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import 'api/corona_service.dart';
-import 'app.dart';
-
-void main() {
+void main() async {
+  var corona = CoronaTravelApi();
+  var route = await corona.getRoute("USA", "Britain");
+  print(route);
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) => CoronaSerivce(),
-        )
-      ],
-      child: MyApp(),
-    ),
+    HomeScreen(),
   );
 }
