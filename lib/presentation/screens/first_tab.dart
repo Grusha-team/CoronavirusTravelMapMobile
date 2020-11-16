@@ -8,19 +8,25 @@ class FirstTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: SlidingUpPanel(
-        controller: panelController,
-        maxHeight: MediaQuery.of(context).size.height - tabBarHeight,
-        panelBuilder: (scrollController) => buildSlidingPanel(
-            scrollController: scrollController,
-            panelController: panelController,
-            onClicked: panelController.open),
-        body: Center(
-            child: InteractiveViewer(
-                child: Image.network(
-                    'https://lh3.googleusercontent.com/proxy/9pMJnskr6PBB9DzQa8u9wHE_fuFbvYTwqamtA-MkzcgEFSTUuT_Sr0Ld5_SWcq00JGBRyUVrK6McDCCVyEb1Bbvq'))),
+        body: WillPopScope(
+      onWillPop: () {
+        panelController.close();
+        return ;
+      },
+      child: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: SlidingUpPanel(
+          controller: panelController,
+          maxHeight: MediaQuery.of(context).size.height - tabBarHeight,
+          panelBuilder: (scrollController) => buildSlidingPanel(
+              scrollController: scrollController,
+              panelController: panelController,
+              onClicked: panelController.open),
+          body: Center(
+              child: InteractiveViewer(
+                  child: Image.network(
+                      'https://lh3.googleusercontent.com/proxy/9pMJnskr6PBB9DzQa8u9wHE_fuFbvYTwqamtA-MkzcgEFSTUuT_Sr0Ld5_SWcq00JGBRyUVrK6McDCCVyEb1Bbvq'))),
+        ),
       ),
     ));
   }
