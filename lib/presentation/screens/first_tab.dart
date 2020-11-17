@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:corona_travel/data/corona_travel_api.dart';
 
 class FirstTab extends StatelessWidget {
   final panelController = PanelController();
   final double tabBarHeight = 80;
+  final firstCountryController = TextEditingController();
+  final secondCountryController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +14,7 @@ class FirstTab extends StatelessWidget {
         body: WillPopScope(
       onWillPop: () {
         panelController.close();
-        return ;
+        return;
       },
       child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
@@ -19,22 +22,22 @@ class FirstTab extends StatelessWidget {
           controller: panelController,
           maxHeight: MediaQuery.of(context).size.height - tabBarHeight,
           panelBuilder: (scrollController) => buildSlidingPanel(
-              scrollController: scrollController,
-              panelController: panelController,
-              onClicked: panelController.open),
+            scrollController: scrollController,
+            panelController: panelController,
+          ),
           body: Center(
               child: InteractiveViewer(
                   child: Image.network(
-                      'https://lh3.googleusercontent.com/proxy/9pMJnskr6PBB9DzQa8u9wHE_fuFbvYTwqamtA-MkzcgEFSTUuT_Sr0Ld5_SWcq00JGBRyUVrK6McDCCVyEb1Bbvq'))),
+                      'https://i.pinimg.com/originals/4a/f7/4b/4af74b3c8bcc75c2ef8a7f338e8badbb.png'))),
         ),
       ),
     ));
   }
 
-  Widget buildSlidingPanel(
-      {@required PanelController panelController,
-      @required ScrollController scrollController,
-      @required VoidCallback onClicked}) {
+  Widget buildSlidingPanel({
+    @required PanelController panelController,
+    @required ScrollController scrollController,
+  }) {
     return Column(
       children: [
         Row(
@@ -44,19 +47,27 @@ class FirstTab extends StatelessWidget {
               width: 150.0,
               height: 80.0,
               child: TextFormField(
-                onTap: onClicked,
+                controller: firstCountryController,
+                onTap: panelController.open,
               ),
             ),
             SizedBox(
               width: 150.0,
               height: 80.0,
               child: TextFormField(
-                onTap: onClicked,
+                controller: secondCountryController,
+                onTap: panelController.open,
               ),
             )
           ],
         ),
-        const Text("Заглушка #2"),
+        RaisedButton(onPressed: () async {
+          //TODO remove logic from UI, right now only for testing purpose
+          var response = await CoronaTravelApi().getRoute(
+              firstCountryController.text, secondCountryController.text);
+
+          print(response);
+        }),
       ],
     );
   }
