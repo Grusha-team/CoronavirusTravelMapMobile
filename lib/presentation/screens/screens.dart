@@ -1,3 +1,3 @@
-export 'first_tab.dart';
+export 'first_tab_screen.dart';
 export 'home_screen.dart';
-export 'second_tab.dart';
+export 'second_tab_screen.dart';

@@ -1,3 +1,4 @@
+import 'package:corona_travel/presentation/screens/testing.dart';
 import 'package:flutter/material.dart';
 import 'package:corona_travel/presentation/screens/screens.dart';
 
@@ -23,7 +24,7 @@ class TopBarWidget extends StatelessWidget {
         body: TabBarView(
             physics: const NeverScrollableScrollPhysics(),
             children: [
-              FirstTab(),
+              AutoCompleteDemo(),
               SecondTab(),
             ]),
       ),
