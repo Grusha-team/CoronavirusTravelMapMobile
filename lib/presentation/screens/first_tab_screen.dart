@@ -1,6 +1,7 @@
+import 'package:corona_travel/blocks/my_panel_bloc/mypanel_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'package:corona_travel/data/corona_travel_api.dart';
 
 class FirstTab extends StatefulWidget {
   @override
@@ -8,73 +9,129 @@ class FirstTab extends StatefulWidget {
 }
 
 class _FirstTabState extends State<FirstTab> {
-  final panelController = PanelController();
-  final double tabBarHeight = 80;
-  final firstCountryController = TextEditingController();
-  final secondCountryController = TextEditingController();
-  Map stats;
-  @override
-  void initState() {
-    super.initState();
-  }
-
+  final PanelController _panelController = PanelController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: WillPopScope(
-        onWillPop: () {
-          panelController.close();
-          return;
+      body: BlocBuilder<MyPanelBloc, MyPanelState>(
+        // ignore: missing_return
+        builder: (context, state) {
+          if (state is MyPanelFirst) {
+            return SlidingUpPanel(
+              onPanelClosed: () => BlocProvider.of<MyPanelBloc>(context)
+                  .add(DefaultMyPanelTapped()),
+              controller: _panelController,
+              panel: Column(children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                        color: Colors.blue,
+                        height: 100.0,
+                        width: MediaQuery.of(context).size.width,
+                      ),
+                    ),
+                  ],
+                )
+              ]),
+              body: GestureDetector(
+                onTap: () {
+                  _panelController.close();
+                  BlocProvider.of<MyPanelBloc>(context)
+                      .add(DefaultMyPanelTapped());
+                },
+                child: Container(
+                  height: 200.0,
+                  width: 200.0,
+                  color: Colors.yellow,
+                ),
+              ),
+            );
+          } else if (state is MyPanelSecond) {
+            return SlidingUpPanel(
+              onPanelClosed: () => BlocProvider.of<MyPanelBloc>(context)
+                  .add(DefaultMyPanelTapped()),
+              controller: _panelController,
+              panel: Column(children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                        color: Colors.red,
+                        height: 100.0,
+                        width: MediaQuery.of(context).size.width,
+                      ),
+                    ),
+                  ],
+                )
+              ]),
+              body: GestureDetector(
+                onTap: () {
+                  _panelController.close();
+                  BlocProvider.of<MyPanelBloc>(context)
+                      .add(DefaultMyPanelTapped());
+                },
+                child: Container(
+                  height: 200.0,
+                  width: 200.0,
+                  color: Colors.yellow,
+                ),
+              ),
+            );
+          } else if (state is MyPanelInitial) {
+            return SlidingUpPanel(
+              maxHeight: 200.0,
+              controller: _panelController,
+              panel: Column(children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        _panelController.open();
+                        BlocProvider.of<MyPanelBloc>(context)
+                            .add(FirstMyPanelTapped());
+                      },
+                      child: Container(
+                        color: Colors.blue,
+                        height: 100.0,
+                        width: 100.0,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        _panelController.open();
+                        BlocProvider.of<MyPanelBloc>(context)
+                            .add(SecondMyPanelTapped());
+                      },
+                      child: Container(
+                        color: Colors.red,
+                        height: 100.0,
+                        width: 100.0,
+                      ),
+                    ),
+                  ],
+                )
+              ]),
+              body: GestureDetector(
+                onTap: () {
+                  BlocProvider.of<MyPanelBloc>(context)
+                      .add(DefaultMyPanelTapped());
+                },
+                child: Container(
+                  height: 200.0,
+                  width: 200.0,
+                  color: Colors.yellow,
+                ),
+              ),
+            );
+          }
         },
-        child: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: SlidingUpPanel(
-            controller: panelController,
-            maxHeight: MediaQuery.of(context).size.height - tabBarHeight,
-            panelBuilder: (scrollController) => buildSlidingPanel(
-              scrollController: scrollController,
-              panelController: panelController,
-            ),
-            body: const Center(
-              child: Text(''),
-            ),
-          ),
-        ),
       ),
-    );
-  }
-
-  Widget buildSlidingPanel({
-    @required PanelController panelController,
-    @required ScrollController scrollController,
-  }) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            SizedBox(
-              width: 150.0,
-              height: 80.0,
-              child: TextFormField(
-                controller: firstCountryController,
-                onTap: panelController.open,
-              ),
-            ),
-            SizedBox(
-              width: 150.0,
-              height: 80.0,
-              child: TextFormField(
-                controller: secondCountryController,
-                onTap: panelController.open,
-              ),
-            )
-          ],
-        ),
-        RaisedButton(onPressed: () async {
-          
-        }),
-      ],
     );
   }
 }
