@@ -10,6 +10,11 @@ class FirstTab extends StatefulWidget {
 
 class _FirstTabState extends State<FirstTab> {
   final PanelController _panelController = PanelController();
+  final TextEditingController _firstTextEditingController =
+      TextEditingController();
+  final TextEditingController _secondTextEditingController =
+      TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,19 +23,26 @@ class _FirstTabState extends State<FirstTab> {
         builder: (context, state) {
           if (state is MyPanelFirst) {
             return SlidingUpPanel(
-              onPanelClosed: () => BlocProvider.of<MyPanelBloc>(context)
-                  .add(DefaultMyPanelTapped()),
+              onPanelClosed: () {
+                FocusScope.of(context).unfocus();
+                BlocProvider.of<MyPanelBloc>(context)
+                    .add(DefaultMyPanelTapped());
+              },
               controller: _panelController,
               panel: Column(children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    GestureDetector(
-                      onTap: () {},
-                      child: Container(
-                        color: Colors.blue,
-                        height: 100.0,
-                        width: MediaQuery.of(context).size.width,
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: 100.0,
+                      child: TextFormField(
+                        controller: _firstTextEditingController,
+                        onTap: () {
+                          _panelController.open();
+                          BlocProvider.of<MyPanelBloc>(context)
+                              .add(FirstMyPanelTapped());
+                        },
                       ),
                     ),
                   ],
@@ -38,6 +50,7 @@ class _FirstTabState extends State<FirstTab> {
               ]),
               body: GestureDetector(
                 onTap: () {
+                  FocusScope.of(context).unfocus();
                   _panelController.close();
                   BlocProvider.of<MyPanelBloc>(context)
                       .add(DefaultMyPanelTapped());
@@ -51,19 +64,26 @@ class _FirstTabState extends State<FirstTab> {
             );
           } else if (state is MyPanelSecond) {
             return SlidingUpPanel(
-              onPanelClosed: () => BlocProvider.of<MyPanelBloc>(context)
-                  .add(DefaultMyPanelTapped()),
+              onPanelClosed: () {
+                FocusScope.of(context).unfocus();
+                BlocProvider.of<MyPanelBloc>(context)
+                    .add(DefaultMyPanelTapped());
+              },
               controller: _panelController,
               panel: Column(children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    GestureDetector(
-                      onTap: () {},
-                      child: Container(
-                        color: Colors.red,
-                        height: 100.0,
-                        width: MediaQuery.of(context).size.width,
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: 100.0,
+                      child: TextFormField(
+                        controller: _secondTextEditingController,
+                        onTap: () {
+                          _panelController.open();
+                          BlocProvider.of<MyPanelBloc>(context)
+                              .add(SecondMyPanelTapped());
+                        },
                       ),
                     ),
                   ],
@@ -71,6 +91,8 @@ class _FirstTabState extends State<FirstTab> {
               ]),
               body: GestureDetector(
                 onTap: () {
+                  FocusScope.of(context).unfocus();
+
                   _panelController.close();
                   BlocProvider.of<MyPanelBloc>(context)
                       .add(DefaultMyPanelTapped());
@@ -86,39 +108,48 @@ class _FirstTabState extends State<FirstTab> {
             return SlidingUpPanel(
               maxHeight: 200.0,
               controller: _panelController,
-              panel: Column(children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        _panelController.open();
-                        BlocProvider.of<MyPanelBloc>(context)
-                            .add(FirstMyPanelTapped());
-                      },
-                      child: Container(
-                        color: Colors.blue,
-                        height: 100.0,
-                        width: 100.0,
+              panel: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: 150.0,
+                        height: 50.0,
+                        child: TextFormField(
+                          controller: _firstTextEditingController,
+                          onTap: () {
+                            _panelController.open();
+                            BlocProvider.of<MyPanelBloc>(context)
+                                .add(FirstMyPanelTapped());
+                          },
+                        ),
                       ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        _panelController.open();
-                        BlocProvider.of<MyPanelBloc>(context)
-                            .add(SecondMyPanelTapped());
-                      },
-                      child: Container(
-                        color: Colors.red,
-                        height: 100.0,
-                        width: 100.0,
+                      SizedBox(
+                        width: 150.0,
+                        height: 50.0,
+                        child: TextFormField(
+                          controller: _secondTextEditingController,
+                          onTap: () {
+                            _panelController.open();
+                            BlocProvider.of<MyPanelBloc>(context)
+                                .add(SecondMyPanelTapped());
+                          },
+                        ),
                       ),
-                    ),
-                  ],
-                )
-              ]),
+                    ],
+                  ),
+                  RaisedButton(
+                    onPressed: () {},
+                    child: const Text('Поехали'),
+                  ),
+                  const SizedBox(height: 40.0),
+                  const Text('Stay home, stay safe!')
+                ],
+              ),
               body: GestureDetector(
                 onTap: () {
+                  FocusScope.of(context).unfocus();
                   BlocProvider.of<MyPanelBloc>(context)
                       .add(DefaultMyPanelTapped());
                 },

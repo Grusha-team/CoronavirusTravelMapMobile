@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:corona_travel/data/models/country.dart';
 import 'package:http/http.dart' as http;
 
 class CoronaTravelApi {
@@ -27,29 +26,5 @@ class CoronaTravelApi {
     return _data;
   }
 
-  /// Возвращает [List] из всех стран.
-  void getAllCountries() async {
-    try {
-      final _response =
-          await http.get('http://176.119.156.192/GetAllCountries');
-      if (_response.statusCode == 200) {
-      } else {
-        print('Error getting countries.');
-      }
-    } catch (e) {
-      print('Error');
-    }
-  }
-
-  dynamic loadCountries(String jsonString) {
-    final parsed = json.decode(jsonString).cast<Map<String, dynamic>>();
-    return parsed.map<Country>((json) => Country.fromJson(json)).toList();
-  }
-
-  Future<Map> getCoronaStatistcs(String country) async {
-    final _url = 'https://coronavirus-19-api.herokuapp.com/countries/$country';
-    final _response = await http.get(Uri.encodeFull(_url));
-    final _data = json.decode(_response.body) as Map<String, dynamic>;
-    return _data;
-  }
+  //TODO добавить логику для получения списка всех стран
 }
