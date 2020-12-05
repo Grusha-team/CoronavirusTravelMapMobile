@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+import 'models/country.dart';
+
 class CoronaTravelApi {
   /// Принимает на вход 2 страны типа [String],
   /// возвращает [List] с маршрутом из 1 страны во 2.
@@ -26,5 +28,9 @@ class CoronaTravelApi {
     return _data;
   }
 
-  //TODO добавить логику для получения списка всех стран
+  Future getAllCountries() async {
+    final response = await http.get('http://176.119.156.192/GetAllCountries');
+    final parsed = json.decode(response.body).cast<Map<String, dynamic>>();
+    return parsed.map<Country>((json) => Country.fromJson(json)).toList();
+  }
 }

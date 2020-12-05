@@ -20,4 +20,3 @@ class ApiGetRoute extends MyPanelEvent {
   ApiGetRoute({@required this.country1, @required this.country2});
 }
 
-class ApiGetCountryData extends MyPanelEvent {}

@@ -1,11 +1,10 @@
 import 'package:flutter/foundation.dart';
 
 class Country {
-  @required
   String name;
   String quarantine;
   String covidtest;
-  Country({this.name, this.quarantine, this.covidtest});
+  Country({@required this.name, this.quarantine, this.covidtest});
 
   factory Country.fromJson(Map<String, dynamic> parsedJson) {
     return Country(
