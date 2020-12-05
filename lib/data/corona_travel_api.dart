@@ -28,6 +28,7 @@ class CoronaTravelApi {
     return _data;
   }
 
+  /// Ничего не принмает на вход, возвращает [List] из всех стран
   Future getAllCountries() async {
     final response = await http.get('http://176.119.156.192/GetAllCountries');
     final parsed = json.decode(response.body).cast<Map<String, dynamic>>();
