@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:corona_travel/data/corona_travel_api.dart';
@@ -25,14 +26,23 @@ class MyPanelBloc extends Bloc<MyPanelEvent, MyPanelState> {
     } else if (event is ApiGetRoute) {
       yield ApiLoading();
       try {
-        //TODO add cool error handling
-        final _route =
-            await CoronaTravelApi().getRoute(event.country1, event.country2);
-        yield ApiLoadedRoute(route: _route);
+        if (event.country1 != '' && event.country2 != '') {
+          final _route =
+              await CoronaTravelApi().getRoute(event.country1, event.country2);
+          yield ApiLoadedRoute(route: _route);
+        } else {
+          if (event.country1 == '') {
+            yield ApiError(error: 'Please enter first country');
+          } else if (event.country2 == '') {
+            yield ApiError(error: 'Please enter second country');
+          }
+        }
       } on FormatException {
         yield ApiError(error: "Name of country doesn't exist");
+      } on SocketException {
+        yield ApiError(error: 'Check your internet conection');
       } catch (e) {
-        yield ApiError(error: 'Error');
+        yield ApiError(error: 'You cannot get to the ${event.country2} from ${event.country1}');
       }
     }
   }

@@ -57,7 +57,7 @@ class _FirstTabState extends State<FirstTab> {
 
   SlidingUpPanel _buildMyPanelLoading() {
     return SlidingUpPanel(
-      maxHeight: 200.0,
+      maxHeight: 220.0,
       controller: _panelController,
       panel: Column(
         mainAxisAlignment: MainAxisAlignment.center,
