@@ -46,7 +46,7 @@ class _FirstTabState extends State<FirstTab> {
           } else if (state is ApiLoading) {
             return _buildMyPanelLoading();
           } else if (state is ApiLoadedRoute) {
-            return _buildMyPanelInitial(context, state.route.toString());
+            return _buildMyPanelLoaded(context, state.route.toString());
           } else if (state is ApiError) {
             return _buildMyPanelInitial(context, state.error);
           }
@@ -73,12 +73,119 @@ class _FirstTabState extends State<FirstTab> {
     );
   }
 
+  SlidingUpPanel _buildMyPanelLoaded(
+    BuildContext context,
+    String _text,
+  ) {
+    return SlidingUpPanel(
+      minHeight: 170.0,
+      maxHeight: 170.0,
+      controller: _panelController,
+      panel: Column(
+        children: [
+          const SizedBox(height: 5.0),
+          Container(
+            width: 40,
+            height: 5,
+            decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: const BorderRadius.all(Radius.circular(12.0))),
+          ),
+          const SizedBox(height: 30.0),
+          Text(_text),
+          const SizedBox(height: 5.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
+                width: 150.0,
+                height: 70.0,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 20.0, left: 10.0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'From',
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25.0),
+                      ),
+                    ),
+                    controller: _firstTextEditingController,
+                    onTap: () {
+                      _panelController.open();
+                      BlocProvider.of<MyPanelBloc>(context)
+                          .add(FirstMyPanelTapped());
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10.0),
+              SizedBox(
+                width: 150.0,
+                height: 70.0,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 20.0, right: 10.0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'To',
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25.0),
+                      ),
+                    ),
+                    controller: _secondTextEditingController,
+                    onTap: () {
+                      _panelController.open();
+                      BlocProvider.of<MyPanelBloc>(context)
+                          .add(SecondMyPanelTapped());
+                    },
+                  ),
+                ),
+              ),
+              IconButton(
+                padding: const EdgeInsets.only(top: 15.0, right: 10.0),
+                icon: const Icon(Icons.compare_arrows, size: 30.0),
+                onPressed: () {
+                  setState(() {
+                    _bufferTextEditController = _firstTextEditingController;
+                    _firstTextEditingController = _secondTextEditingController;
+                    _secondTextEditingController = _bufferTextEditController;
+                  });
+                  if (_firstTextEditingController != null &&
+                      _secondTextEditingController != null) {
+                    BlocProvider.of<MyPanelBloc>(context).add(
+                      ApiGetRoute(
+                          country1: _firstTextEditingController.text,
+                          country2: _secondTextEditingController.text),
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
+          const SizedBox(height: 20.0),
+        ],
+      ),
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+          BlocProvider.of<MyPanelBloc>(context).add(DefaultMyPanelTapped());
+        },
+        child: Container(
+          height: 200.0,
+          width: 200.0,
+          color: Colors.yellow,
+        ),
+      ),
+    );
+  }
+
   SlidingUpPanel _buildMyPanelInitial(
     BuildContext context,
     String _text,
   ) {
     return SlidingUpPanel(
-      maxHeight: 200.0,
+      maxHeight: 100.0,
       controller: _panelController,
       panel: Column(
         children: [
@@ -147,23 +254,18 @@ class _FirstTabState extends State<FirstTab> {
                     _firstTextEditingController = _secondTextEditingController;
                     _secondTextEditingController = _bufferTextEditController;
                   });
+                  if (_firstTextEditingController != null &&
+                      _secondTextEditingController != null) {
+                    BlocProvider.of<MyPanelBloc>(context).add(
+                      ApiGetRoute(
+                          country1: _firstTextEditingController.text,
+                          country2: _secondTextEditingController.text),
+                    );
+                  }
                 },
               ),
             ],
           ),
-          const SizedBox(height: 20.0),
-          RaisedButton(
-            onPressed: () {
-              BlocProvider.of<MyPanelBloc>(context).add(
-                ApiGetRoute(
-                    country1: _firstTextEditingController.text,
-                    country2: _secondTextEditingController.text),
-              );
-            },
-            child: const Text('Поехали'),
-          ),
-          const SizedBox(height: 10.0),
-          Text(_text),
         ],
       ),
       body: GestureDetector(
@@ -236,6 +338,13 @@ class _FirstTabState extends State<FirstTab> {
                           _firstTextEditingController.text = item.name.trim();
                           BlocProvider.of<MyPanelBloc>(context)
                               .add(DefaultMyPanelTapped());
+                          if (_secondTextEditingController != null) {
+                            BlocProvider.of<MyPanelBloc>(context).add(
+                              ApiGetRoute(
+                                  country1: _firstTextEditingController.text,
+                                  country2: _secondTextEditingController.text),
+                            );
+                          }
                         },
                         itemBuilder: (context, item) {
                           return Text(
@@ -325,6 +434,13 @@ class _FirstTabState extends State<FirstTab> {
                         _secondTextEditingController.text = item.name.trim();
                         BlocProvider.of<MyPanelBloc>(context)
                             .add(DefaultMyPanelTapped());
+                        if (_firstTextEditingController != null) {
+                          BlocProvider.of<MyPanelBloc>(context).add(
+                            ApiGetRoute(
+                                country1: _firstTextEditingController.text,
+                                country2: _secondTextEditingController.text),
+                          );
+                        }
                       },
                       itemBuilder: (context, item) {
                         return Text(
