@@ -55,6 +55,8 @@ class _FirstTabState extends State<FirstTab> {
     );
   }
 
+  //TODO refactor UI
+
   SlidingUpPanel _buildMyPanelLoading() {
     return SlidingUpPanel(
       maxHeight: 220.0,
@@ -287,6 +289,14 @@ class _FirstTabState extends State<FirstTab> {
       onPanelClosed: () {
         FocusScope.of(context).unfocus();
         BlocProvider.of<MyPanelBloc>(context).add(DefaultMyPanelTapped());
+        if (_firstTextEditingController != null &&
+            _secondTextEditingController != null) {
+          BlocProvider.of<MyPanelBloc>(context).add(
+            ApiGetRoute(
+                country1: _firstTextEditingController.text,
+                country2: _secondTextEditingController.text),
+          );
+        }
       },
       controller: _panelController,
       panel: Column(
@@ -382,6 +392,14 @@ class _FirstTabState extends State<FirstTab> {
       onPanelClosed: () {
         FocusScope.of(context).unfocus();
         BlocProvider.of<MyPanelBloc>(context).add(DefaultMyPanelTapped());
+        if (_firstTextEditingController != null &&
+            _secondTextEditingController != null) {
+          BlocProvider.of<MyPanelBloc>(context).add(
+            ApiGetRoute(
+                country1: _firstTextEditingController.text,
+                country2: _secondTextEditingController.text),
+          );
+        }
       },
       controller: _panelController,
       panel: Column(
