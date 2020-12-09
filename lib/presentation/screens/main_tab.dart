@@ -6,12 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 
-class FirstTab extends StatefulWidget {
+class MainTab extends StatefulWidget {
   @override
-  _FirstTabState createState() => _FirstTabState();
+  _MainTabState createState() => _MainTabState();
 }
 
-class _FirstTabState extends State<FirstTab> {
+class _MainTabState extends State<MainTab> {
   final PanelController _panelController = PanelController();
   TextEditingController _bufferTextEditController = TextEditingController();
   TextEditingController _firstTextEditingController = TextEditingController();
@@ -19,7 +19,7 @@ class _FirstTabState extends State<FirstTab> {
   GlobalKey<AutoCompleteTextFieldState<Country>> key2 = GlobalKey();
   List<Country> countries = <Country>[];
 
-  final String _routeInitial = 'Stay home, stay safe!';
+  final String _routeInitial = '';
 
   @override
   void initState() {
@@ -34,6 +34,10 @@ class _FirstTabState extends State<FirstTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('CoronaTravelMap'),
+        centerTitle: true,
+      ),
       body: BlocBuilder<MyPanelBloc, MyPanelState>(
         // ignore: missing_return
         builder: (context, state) {
@@ -48,18 +52,16 @@ class _FirstTabState extends State<FirstTab> {
           } else if (state is ApiLoadedRoute) {
             return _buildMyPanelLoaded(context, state.route.toString());
           } else if (state is ApiError) {
-            return _buildMyPanelInitial(context, state.error);
+            return _buildMyPanelError(context, state.error);
           }
         },
       ),
     );
   }
 
-  //TODO refactor UI
-
   SlidingUpPanel _buildMyPanelLoading() {
     return SlidingUpPanel(
-      maxHeight: 220.0,
+      maxHeight: 130.0,
       controller: _panelController,
       panel: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -80,8 +82,7 @@ class _FirstTabState extends State<FirstTab> {
     String _text,
   ) {
     return SlidingUpPanel(
-      minHeight: 170.0,
-      maxHeight: 170.0,
+      minHeight: 130.0,
       controller: _panelController,
       panel: Column(
         children: [
@@ -93,9 +94,8 @@ class _FirstTabState extends State<FirstTab> {
                 color: Colors.grey[300],
                 borderRadius: const BorderRadius.all(Radius.circular(12.0))),
           ),
-          const SizedBox(height: 30.0),
-          Text(_text),
-          const SizedBox(height: 5.0),
+          const SizedBox(height: 10.0),
+          Text(_text.substring(1, _text.length - 1)),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -166,6 +166,7 @@ class _FirstTabState extends State<FirstTab> {
             ],
           ),
           const SizedBox(height: 20.0),
+          const Text('Тут должна быть статистика')
         ],
       ),
       body: GestureDetector(
@@ -199,6 +200,111 @@ class _FirstTabState extends State<FirstTab> {
                 color: Colors.grey[300],
                 borderRadius: const BorderRadius.all(Radius.circular(12.0))),
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
+                width: 150.0,
+                height: 70.0,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 20.0, left: 10.0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'From',
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25.0),
+                      ),
+                    ),
+                    controller: _firstTextEditingController,
+                    onTap: () {
+                      _panelController.open();
+                      BlocProvider.of<MyPanelBloc>(context)
+                          .add(FirstMyPanelTapped());
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10.0),
+              SizedBox(
+                width: 150.0,
+                height: 70.0,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 20.0, right: 10.0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'To',
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25.0),
+                      ),
+                    ),
+                    controller: _secondTextEditingController,
+                    onTap: () {
+                      _panelController.open();
+                      BlocProvider.of<MyPanelBloc>(context)
+                          .add(SecondMyPanelTapped());
+                    },
+                  ),
+                ),
+              ),
+              IconButton(
+                padding: const EdgeInsets.only(top: 15.0, right: 10.0),
+                icon: const Icon(Icons.compare_arrows, size: 30.0),
+                onPressed: () {
+                  setState(() {
+                    _bufferTextEditController = _firstTextEditingController;
+                    _firstTextEditingController = _secondTextEditingController;
+                    _secondTextEditingController = _bufferTextEditController;
+                  });
+                  if (_firstTextEditingController != null &&
+                      _secondTextEditingController != null) {
+                    BlocProvider.of<MyPanelBloc>(context).add(
+                      ApiGetRoute(
+                          country1: _firstTextEditingController.text,
+                          country2: _secondTextEditingController.text),
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+          BlocProvider.of<MyPanelBloc>(context).add(DefaultMyPanelTapped());
+        },
+        child: Container(
+          height: 200.0,
+          width: 200.0,
+          color: Colors.yellow,
+        ),
+      ),
+    );
+  }
+
+  SlidingUpPanel _buildMyPanelError(
+    BuildContext context,
+    String _text,
+  ) {
+    return SlidingUpPanel(
+      minHeight: 130.0,
+      maxHeight: 130.0,
+      controller: _panelController,
+      panel: Column(
+        children: [
+          const SizedBox(height: 5.0),
+          Container(
+            width: 40,
+            height: 5,
+            decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: const BorderRadius.all(Radius.circular(12.0))),
+          ),
+          const SizedBox(height: 10.0),
+          Text(_text),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

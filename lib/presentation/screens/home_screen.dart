@@ -1,10 +1,17 @@
-import 'package:corona_travel/presentation/widgets/top_bar.dart';
+import 'package:corona_travel/blocks/my_panel_bloc/mypanel_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:corona_travel/presentation/widgets/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'screens.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return TopBarWidget();
+    return Scaffold(
+      body: BlocProvider<MyPanelBloc>(
+        create: (context) => MyPanelBloc(),
+        child: MainTab(),
+      ),
+    );
   }
 }
