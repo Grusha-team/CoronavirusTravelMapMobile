@@ -172,7 +172,6 @@ class _MainTabState extends State<MainTab> {
       body: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
-          BlocProvider.of<MyPanelBloc>(context).add(DefaultMyPanelTapped());
         },
         child: Container(
           height: 200.0,
@@ -379,7 +378,6 @@ class _MainTabState extends State<MainTab> {
       body: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
-          BlocProvider.of<MyPanelBloc>(context).add(DefaultMyPanelTapped());
         },
         child: Container(
           height: 200.0,
@@ -482,7 +480,6 @@ class _MainTabState extends State<MainTab> {
         onTap: () {
           FocusScope.of(context).unfocus();
           _panelController.close();
-          BlocProvider.of<MyPanelBloc>(context).add(DefaultMyPanelTapped());
         },
         child: Container(
           height: 200.0,
@@ -585,7 +582,6 @@ class _MainTabState extends State<MainTab> {
         onTap: () {
           FocusScope.of(context).unfocus();
           _panelController.close();
-          BlocProvider.of<MyPanelBloc>(context).add(DefaultMyPanelTapped());
         },
         child: Container(
           height: 200.0,
